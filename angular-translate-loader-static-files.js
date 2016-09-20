@@ -1,6 +1,6 @@
 /*!
  * angular-translate - v2.12.0 - 2016-09-05
- * 
+ *
  * Copyright (c) 2016 The angular-translate team, Pascal Precht; Licensed MIT
  */
 (function (root, factory) {
@@ -57,13 +57,23 @@ function $translateStaticFilesLoader($q, $http) {
       if (!file || (!angular.isString(file.prefix) || !angular.isString(file.suffix))) {
         throw new Error('Couldn\'t load static file, no prefix or suffix specified!');
       }
+      var fileUrl;
+      var fileUrlWithoutExtension = [
+        file.prefix,
+        options.key
+     ].join('');
 
+      if(file.filemap && file.filemap[fileUrlWithoutExtension]) {
+         fileUrl = file.filemap[fileUrlWithoutExtension];
+      } else {
+         fileUrl = [
+           file.prefix,
+           options.key,
+           file.suffix
+        ].join('');
+      }
       return $http(angular.extend({
-        url: [
-          file.prefix,
-          options.key,
-          file.suffix
-        ].join(''),
+        url: fileUrl,
         method: 'GET',
         params: ''
       }, options.$http))
@@ -81,7 +91,8 @@ function $translateStaticFilesLoader($q, $http) {
       promises.push(load({
         prefix: options.files[i].prefix,
         key: options.key,
-        suffix: options.files[i].suffix
+        suffix: options.files[i].suffix,
+        filemap: options.filemap
       }));
     }
 
