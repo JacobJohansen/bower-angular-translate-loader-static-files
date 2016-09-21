@@ -57,21 +57,16 @@ function $translateStaticFilesLoader($q, $http) {
       if (!file || (!angular.isString(file.prefix) || !angular.isString(file.suffix))) {
         throw new Error('Couldn\'t load static file, no prefix or suffix specified!');
       }
-      var fileUrl;
-      var fileUrlWithoutExtension = [
+      var fileUrl = [
         file.prefix,
-        options.key
+        options.key,
+        file.suffix
      ].join('');
 
-      if(file.filemap && file.filemap[fileUrlWithoutExtension]) {
-         fileUrl = file.filemap[fileUrlWithoutExtension];
-      } else {
-         fileUrl = [
-           file.prefix,
-           options.key,
-           file.suffix
-        ].join('');
+      if(options.fileMap && options.fileMap[fileUrl]) {
+         fileUrl = file.fileMap[fileUrl];
       }
+
       return $http(angular.extend({
         url: fileUrl,
         method: 'GET',
@@ -91,8 +86,7 @@ function $translateStaticFilesLoader($q, $http) {
       promises.push(load({
         prefix: options.files[i].prefix,
         key: options.key,
-        suffix: options.files[i].suffix,
-        filemap: options.filemap
+        suffix: options.files[i].suffix
       }));
     }
 
