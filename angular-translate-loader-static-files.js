@@ -64,7 +64,7 @@ function $translateStaticFilesLoader($q, $http) {
      ].join('');
 
       if(options.fileMap && options.fileMap[fileUrl]) {
-         fileUrl = file.fileMap[fileUrl];
+         fileUrl = options.fileMap[fileUrl];
       }
 
       return $http(angular.extend({
